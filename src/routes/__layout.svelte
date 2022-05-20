@@ -47,5 +47,5 @@
 			安妮薇时报
 		</a>
 	</div>
-	<p class="text-zinc-400 mt-2 text-xs inline-block mx-auto" on:click={onEgg}>🥚</p>
+	<p class="text-zinc-400 mt-2 text-xs inline-block mx-auto cursor-pointer" on:click={onEgg}>🥚</p>
 </footer>
