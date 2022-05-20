@@ -1,20 +1,26 @@
 <script lang="ts">
-	import { toBlob } from 'html-to-image';
-	import { saveAs } from 'file-saver';
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { toBlob, toPng } from 'html-to-image';
+	// import { saveAs } from 'file-saver';
+	import { avatar, nick, content } from '../store';
 
 	let el: HTMLDivElement;
-
-	let avatar = '/avatar.jpg';
-	let nick = 'JJ';
-	let content = '我做得真好呀';
-
 	let dataUrl = '';
 
+	onMount(() => {
+		toBlob(el).then();
+	});
+
 	const onExport = () => {
-		toBlob(el).then((blob) => {
-			if (blob) {
-				saveAs(blob, 'speak.png');
-			}
+		// toBlob(el).then((blob) => {
+		// 	if (blob) {
+		// 		saveAs(blob, 'speak.png');
+		// 	}
+		// });
+
+		toPng(el).then((url) => {
+			dataUrl = url;
 		});
 	};
 </script>
@@ -24,7 +30,7 @@
 		<label class="flex items-center">
 			昵称：<input
 				type="text"
-				bind:value={nick}
+				bind:value={$nick}
 				class="flex-1 border h-8 px-2 focus-within:outline-none focus:border-[#272727]"
 				maxlength="16"
 			/>
@@ -32,7 +38,7 @@
 		<label class="flex items-center">
 			内容：<input
 				type="text"
-				bind:value={content}
+				bind:value={$content}
 				class="flex-1 border h-8 px-2 focus-within:outline-none focus:border-[#272727]"
 			/>
 		</label>
@@ -43,13 +49,13 @@
 	<div bind:this={el} class="bg-[#ededed] p-4">
 		<div class="flex">
 			<div class="w-10 h-10 rounded overflow-hidden mt-[6px] flex-shrink-0">
-				<img src={avatar} alt="" />
+				<img src={$avatar} decoding="sync" loading="eager" alt="avatar" />
 			</div>
 
 			<div class="ml-3">
-				<div class="text-[#868686] text-xs">{nick}</div>
+				<div class="text-[#868686] text-xs">{$nick}</div>
 				<div class="text-sm inline-block bg-white py-2 px-3 rounded relative mt-[3px] break-all">
-					{content}
+					{$content}
 					<svg
 						class="absolute -left-[5px] top-[6px]"
 						width="8"
@@ -79,7 +85,10 @@
 </div>
 
 {#if dataUrl}
-	<img src={dataUrl} alt="" />
+	<div class="max-w-xl p-10 mx-auto mb-10" transition:fade={{ delay: 50, duration: 200 }}>
+		<img src={dataUrl} alt="" />
+		<p class="text-xs text-center mt-1 text-[#f60c3e]">↑ 长按图片保存</p>
+	</div>
 {/if}
 
 <style>

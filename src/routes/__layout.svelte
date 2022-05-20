@@ -1,14 +1,42 @@
 <script>
 	import '../app.css';
+	import { nick, avatar, content } from '../store';
+
+	const JJ = {
+		nick: 'JJ',
+		avatar: '/JJ.jpg',
+		content: '我做得真好呀'
+	};
+
+	const LEON = {
+		nick: 'leongao',
+		avatar: '/leongao.jpg',
+		content: '原来我15年前就发明了 nomi  :⁍'
+	};
+
+	const onEgg = () => {
+		if ($nick === 'JJ') {
+			nick.set(LEON.nick);
+			avatar.set(LEON.avatar);
+			content.set(LEON.content);
+		} else {
+			nick.set(JJ.nick);
+			avatar.set(JJ.avatar);
+			content.set(JJ.content);
+		}
+	};
 </script>
 
 <svelte:head>
 	<title>Anyway • 说</title>
 </svelte:head>
-<slot />
 
-<footer class="fixed bottom-4 text-xs left-1/2 transform -translate-x-1/2">
-	<div class="flex items-center">
+<main style="min-height: calc(100vh - 80px); min-height: calc(100svh - 80px);">
+	<slot />
+</main>
+
+<footer class="mx-auto flex flex-col items-center">
+	<div class="flex items-center justify-center text-xs">
 		<span class="">友情链接：</span>
 		<a href="https://anyway.fm/" class="flex items-center">
 			<img
@@ -19,5 +47,5 @@
 			安妮薇时报
 		</a>
 	</div>
-	<p class="text-center transform scale-95 text-zinc-400 mt-1">🥚彩蛋明天加</p>
+	<p class="text-zinc-400 mt-2 text-xs inline-block mx-auto" on:click={onEgg}>🥚</p>
 </footer>
