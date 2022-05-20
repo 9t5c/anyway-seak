@@ -2,26 +2,44 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { toBlob, toPng } from 'html-to-image';
-	// import { saveAs } from 'file-saver';
-	import { avatar, nick, content } from '../store';
+	import { saveAs } from 'file-saver';
+	import { avatar, nick, content, el } from '../store';
 
-	let el: HTMLDivElement;
 	let dataUrl = '';
 
 	onMount(() => {
-		toBlob(el).then();
+		if ($el) toBlob($el).then();
 	});
 
-	const onExport = () => {
-		// toBlob(el).then((blob) => {
-		// 	if (blob) {
-		// 		saveAs(blob, 'speak.png');
-		// 	}
-		// });
+	const checkMobieDevice = () => {
+		const ua = navigator.userAgent;
+		if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+			return 'tablet';
+		} else if (
+			/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+				ua
+			)
+		) {
+			return 'mobile';
+		}
+		return 'desktop';
+	};
 
-		toPng(el).then((url) => {
-			dataUrl = url;
-		});
+	const onExport = () => {
+		if (!$el) return;
+
+		const device = checkMobieDevice();
+		if (device === 'desktop') {
+			toBlob($el).then((blob) => {
+				if (blob) {
+					saveAs(blob, 'speak.png');
+				}
+			});
+		} else {
+			toPng($el).then((url) => {
+				dataUrl = url;
+			});
+		}
 	};
 </script>
 
@@ -46,7 +64,7 @@
 
 	<div class="h-4" />
 
-	<div bind:this={el} class="bg-[#ededed] p-4">
+	<div bind:this={$el} class="bg-[#ededed] p-4">
 		<div class="flex">
 			<div class="w-10 h-10 rounded overflow-hidden mt-[6px] flex-shrink-0">
 				<img src={$avatar} decoding="sync" loading="eager" alt="avatar" />
@@ -87,7 +105,7 @@
 {#if dataUrl}
 	<div class="max-w-xl p-10 mx-auto mb-10" transition:fade={{ delay: 50, duration: 200 }}>
 		<img src={dataUrl} alt="" />
-		<p class="text-xs text-center mt-1 text-[#f60c3e]">↑ 长按图片保存</p>
+		<p class="text-xs text-center mt-1 text-[#f60c3e]">↑ 长按保存图片</p>
 	</div>
 {/if}
 

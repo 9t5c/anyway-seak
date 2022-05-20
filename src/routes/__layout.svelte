@@ -1,6 +1,7 @@
 <script>
+	import { toPng } from 'html-to-image';
+	import { nick, avatar, content, el } from '../store';
 	import '../app.css';
-	import { nick, avatar, content } from '../store';
 
 	const JJ = {
 		nick: 'JJ',
@@ -15,6 +16,7 @@
 	};
 
 	const onEgg = () => {
+		if ($el) toPng($el);
 		if ($nick === 'JJ') {
 			nick.set(LEON.nick);
 			avatar.set(LEON.avatar);
