@@ -50,6 +50,18 @@
 			});
 		}
 	};
+
+	const onUpload = (e: Event) => {
+		const element = e.currentTarget as HTMLInputElement;
+		const file = element.files?.[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = (event) => {
+				avatar.set(event.target?.result as string);
+			};
+		}
+	};
 </script>
 
 <div class="max-w-xl p-10 mx-auto bg-white">
@@ -75,9 +87,14 @@
 
 	<div bind:this={$el} class="bg-[#ededed] p-4">
 		<div class="flex">
-			<div class="w-10 h-10 rounded overflow-hidden mt-[6px] flex-shrink-0">
-				<img src={$avatar} decoding="sync" loading="eager" alt="avatar" />
-			</div>
+			<label for="upload">
+				<div class="w-10 h-10 rounded overflow-hidden mt-[6px] flex-shrink-0">
+					<img src={$avatar} decoding="sync" loading="eager" alt="avatar" />
+				</div>
+			</label>
+
+			<!-- 上传图片 -->
+			<input id="upload" type="file" accept="image/*" hidden on:change={onUpload} />
 
 			<div class="ml-3">
 				<div class="text-[#868686] text-xs">{$nick}</div>
