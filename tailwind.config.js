@@ -4,10 +4,10 @@ const config = {
 	theme: {
 		extend: {
 			transitionTimingFunction: {
-        'any-hey': 'cubic-bezier(0.95, 0.05, 0.8, 0.04)',
-      },
+				'any-hey': 'cubic-bezier(0.95, 0.05, 0.8, 0.04)'
+			},
 			transformOrigin: {
-				'hey': '50% 50%'
+				hey: '50% 50%'
 			}
 		}
 	},

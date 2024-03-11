@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { toBlob, toPng } from 'html-to-image';
-	import { saveAs } from 'file-saver';
 	import { avatar, nick, content, el } from '../store';
 
 	let dataUrl = '';
@@ -11,7 +10,7 @@
 		if ($el) toBlob($el).then();
 	});
 
-	const checkMobieDevice = () => {
+	const checkMobileDevice = () => {
 		const ua = navigator.userAgent;
 		if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
 			return 'tablet';
@@ -28,11 +27,21 @@
 	const onExport = () => {
 		if (!$el) return;
 
-		const device = checkMobieDevice();
+		const device = checkMobileDevice();
 		if (device === 'desktop') {
 			toBlob($el).then((blob) => {
 				if (blob) {
-					saveAs(blob, 'speak.png');
+					const blobURL = URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.href = blobURL;
+					a.download = 'speak.png';
+					a.style.display = 'none';
+					document.body.append(a);
+					a.click();
+					setTimeout(() => {
+						URL.revokeObjectURL(blobURL);
+						a.remove();
+					}, 1000);
 				}
 			});
 		} else {
@@ -103,7 +112,7 @@
 </div>
 
 {#if dataUrl}
-	<div class="max-w-xl p-10 mx-auto mb-10" transition:fade={{ delay: 50, duration: 200 }}>
+	<div class="max-w-xl p-10 mx-auto mb-10" transition:fade|global={{ delay: 50, duration: 200 }}>
 		<img src={dataUrl} alt="" />
 		<p class="text-xs text-center mt-1 text-[#f60c3e]">↑ 长按保存图片</p>
 	</div>
